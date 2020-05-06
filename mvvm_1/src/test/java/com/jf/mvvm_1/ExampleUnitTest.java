@@ -1,4 +1,4 @@
-package com.jf.mvvm;
+package com.jf.mvvm_1;
 
 import org.junit.Test;
 

@@ -7,7 +7,7 @@
             <!--此处添加和绑定viewModel-->
         <variable
             name="viewModel"
-            type="com.jf.mvvm.vm.MainVM" />
+            type="com.jf.mvvm_0.vm.MainVM" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

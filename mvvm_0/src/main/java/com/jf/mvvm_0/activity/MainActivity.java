@@ -1,13 +1,13 @@
-package com.jf.mvvm.activity;
+package com.jf.mvvm_0.activity;
 
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 
-import com.jf.mvvm.R;
-import com.jf.mvvm.databinding.ActivityMainBinding;
-import com.jf.mvvm.vm.MainVM;
+import com.jf.mvvm_0.R;
+import com.jf.mvvm_0.databinding.ActivityMainBinding;
+import com.jf.mvvm_0.vm.MainVM;
 
 public class MainActivity extends AppCompatActivity {
 

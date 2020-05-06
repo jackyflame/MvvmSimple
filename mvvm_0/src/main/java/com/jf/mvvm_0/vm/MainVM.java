@@ -1,4 +1,4 @@
-package com.jf.mvvm.vm;
+package com.jf.mvvm_0.vm;
 
 import android.util.Log;
 import android.view.View;
@@ -6,8 +6,8 @@ import android.view.View;
 import androidx.databinding.BaseObservable;
 import androidx.databinding.Bindable;
 
-import com.jf.mvvm.BR;
-import com.jf.mvvm.presenter.MainPresenter;
+import com.jf.mvvm_0.BR;
+import com.jf.mvvm_0.presenter.MainPresenter;
 
 /**
  * @Discribe: com.jf.mvvm.vm
