@@ -1,3 +1,4 @@
+include ':orr_for_net'
 rootProject.name='MvvmSimple'
 include ':mvvm_0'
 include ':mvvm_1'
