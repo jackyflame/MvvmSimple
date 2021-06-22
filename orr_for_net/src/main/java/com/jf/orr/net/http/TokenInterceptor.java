@@ -56,10 +56,6 @@ public class TokenInterceptor implements Interceptor {
         Request request = chain.request();
         String url = request.url().toString();
         Uri uri = Uri.parse(url);
-        String requestUrl = uri.getPath();
-        if(requestUrl != null && requestUrl.startsWith("/")){
-            requestUrl = requestUrl.substring(1);
-        }
         Set<String> querySet = uri.getQueryParameterNames();
         Iterator<String> queryIterator = querySet.iterator();
         Map<String, String> queryMap = new HashMap<>();
@@ -91,8 +87,7 @@ public class TokenInterceptor implements Interceptor {
             builder.url(sbUrl.toString());
         }
         builder.header("Content-Type", "application/json")
-                .addHeader("Accept", "application/json")
-                .addHeader(NetConst.KEY_APPKEY, NetConst.MY_APP_KEY);
+                .addHeader("Accept", "application/json");
 
         if(customHeader.size() > 0){
             Iterator<Map.Entry<String, String>> entries = customHeader.entrySet().iterator();
