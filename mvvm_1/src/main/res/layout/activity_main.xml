@@ -19,6 +19,7 @@
             android:id="@+id/txv_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text="@{viewModel.title}"
             tools:text="txv_title"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -29,6 +30,7 @@
             android:id="@+id/txv_title2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text="@{viewModel.title2}"
             tools:text="txv_title2"
             app:layout_constraintTop_toBottomOf="@+id/txv_title"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -43,6 +45,7 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             android:layout_marginTop="20dp"
+            android:onClick="@{viewModel::onTestClick}"
             android:text="测试一下"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
