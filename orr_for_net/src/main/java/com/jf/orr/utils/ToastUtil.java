@@ -14,12 +14,12 @@ import com.jf.orr.base.BaseApplication;
  */
 public class ToastUtil {
 
-    public static void showShort(String message){
-        show(BaseApplication.getContext(),message,Toast.LENGTH_SHORT);
+    public static void showShort(Context context, String message){
+        show(context,message,Toast.LENGTH_SHORT);
     }
 
-    public static void showLong(String message){
-        show(BaseApplication.getContext(),message,Toast.LENGTH_LONG);
+    public static void showLong(Context context, String message){
+        show(context,message,Toast.LENGTH_LONG);
     }
 
     /**

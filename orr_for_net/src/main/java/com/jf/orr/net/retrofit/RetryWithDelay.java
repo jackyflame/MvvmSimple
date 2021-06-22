@@ -1,4 +1,4 @@
-package com.jf.orr.net.worker;
+package com.jf.orr.net.retrofit;
 
 
 import com.jf.orr.log.LogW;
@@ -10,8 +10,7 @@ import io.reactivex.rxjava3.functions.Function;
 
 /**
  * Created by Android Studio.
- * ProjectName: vw
- * Author: yh
+ * Author: github.com/jackyflame
  * Date: 2019/3/17
  * Time: 15:05
  */

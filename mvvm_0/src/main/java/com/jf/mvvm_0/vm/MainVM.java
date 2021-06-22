@@ -12,7 +12,7 @@ import com.jf.mvvm_0.presenter.MainPresenter;
 /**
  * @Discribe: com.jf.mvvm.vm
  * @Time: 2020/4/30
- * @Author: Yinhao
+ * @Author: github.com/jackyflame
  * 继承BaseObservable 是为了方便动态通知databinding更新页面数据，
  * 当然第一次入手，这个不写也可以跟页面互动，只不过没办法通知页面更新
  */

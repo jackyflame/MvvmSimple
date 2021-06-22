@@ -10,7 +10,7 @@ import android.util.Log;
  */
 public class LogW {
 
-    public static String TAG = "JF-ORR";
+    public static String TAG = "NET-ORR";
     public static boolean isDebug = true;
 
     public static void i(String msg){

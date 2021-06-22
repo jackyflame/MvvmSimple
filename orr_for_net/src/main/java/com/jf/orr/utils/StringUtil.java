@@ -15,7 +15,7 @@ import java.util.regex.Pattern;
 /**
  * @Discribe: com.vw.epls.base.utils
  * @Time: 2020/3/20
- * @Author: Yinhao
+ * @Author: github.com/jackyflame
  */
 public class StringUtil {
 

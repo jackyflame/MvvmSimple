@@ -2,17 +2,12 @@ package com.jf.orr.net.entity;
 
 import com.alibaba.fastjson.annotation.JSONField;
 
-/**
- * @Class: BaseWorker
- * @Description:请求基类封装
- * @author: github.com/jackyflame
- * @Date: 2020/8/12
- */
-public class RespEntity<T> extends RespBaseEntity {
+public class RespEntity<T> extends RespBaseEntity<T>{
 
     @JSONField(name = "data")
     private T data;
     private int totalCount;
+    private int total;
 
     public T getData() {
         return data;
@@ -23,10 +18,22 @@ public class RespEntity<T> extends RespBaseEntity {
     }
 
     public int getTotalCount() {
-        return totalCount;
+        if(total > 0){
+            return total;
+        }else{
+            return totalCount;
+        }
     }
 
     public void setTotalCount(int totalCount) {
         this.totalCount = totalCount;
+    }
+
+    public int getTotal() {
+        return total;
+    }
+
+    public void setTotal(int total) {
+        this.total = total;
     }
 }

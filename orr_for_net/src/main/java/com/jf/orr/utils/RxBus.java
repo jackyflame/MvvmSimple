@@ -14,8 +14,7 @@ import io.reactivex.rxjava3.subjects.Subject;
 
 /**
  * Created by Android Studio.
- * ProjectName: shenbian_android_cloud_speaker
- * Author:  HAOZI
+ * Author:  github.com/jackyflame
  * Date: 4/09/19
  * Time: 10:01 AM
  */

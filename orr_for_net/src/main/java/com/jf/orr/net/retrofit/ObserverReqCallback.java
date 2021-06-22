@@ -1,4 +1,4 @@
-package com.jf.orr.net.worker;
+package com.jf.orr.net.retrofit;
 
 import com.jf.orr.net.event.HttpEvent;
 
@@ -9,19 +9,14 @@ import com.jf.orr.net.event.HttpEvent;
  * Date: 2019/3/17
  * Time: 15:05
  */
-public class WorkerCallback<T> extends RequestCallbackSubscriber<T> {
+public class ObserverReqCallback<T> extends RequestCallbackSubscriber<T> {
 
-    private BaseWorker worker;
+    private INetWorker worker;
     private ReqCallback<T> callback;
 
-    public WorkerCallback(BaseWorker worker, ReqCallback<T> callback) {
-        this(worker, callback, true);
-    }
-
-    public WorkerCallback(BaseWorker worker, ReqCallback<T> callback, boolean isPostToRxBus) {
+    public ObserverReqCallback(INetWorker worker, ReqCallback<T> callback) {
         this.worker = worker;
         this.callback = callback;
-        this.isPostToRxBus = isPostToRxBus;
     }
 
     @Override

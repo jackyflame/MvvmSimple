@@ -5,11 +5,12 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
 import com.jf.orr.log.LogW;
+import com.jf.orr.utils.ToastUtil;
 
 /**
  * @Discribe: com.vw.base.utils
  * @Time: 2020/3/17
- * @Author: Yinhao
+ * @Author: github.com/jackyflame
  */
 public class NetWorkUtil {
 
@@ -21,10 +22,10 @@ public class NetWorkUtil {
             flag = connectManager.getActiveNetworkInfo().isAvailable();
             //如果没有网络跳到网络设置界面
             if (!flag) {
-                ToastUtil.showShort(showStr);
+                ToastUtil.showShort(context,showStr);
             }
         } else {
-            ToastUtil.showShort(showStr);
+            ToastUtil.showShort(context,showStr);
         }
 
         return flag;

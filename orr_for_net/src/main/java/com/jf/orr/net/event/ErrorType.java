@@ -15,7 +15,9 @@ public interface ErrorType {
     String ERROR_REQ_ERROR = "500";
 
     String ERROR_NETWORK = "1004";
+    String ERROR_NETWORK_MSG = "无数据网络，请开关WiFi或者移动网络";
     String ERROR_NETWORK_SERVER = "1005";
+    String ERROR_NETWORK_SERVER_MSG = "系统繁忙，请重试";
     String ERROR_NETWORK_LOCAL = "1006";
 
     String ERROR_RESPONSE_NULL = "9988";

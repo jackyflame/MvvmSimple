@@ -1,25 +1,29 @@
 package com.jf.orr.net.retrofit;
 
-import com.jf.orr.net.NetConst;
-import com.jf.orr.net.http.FastJsonConvertFactory;
-import com.jf.orr.net.http.OkHttpHelper;
+import android.app.Application;
+import android.text.TextUtils;
+
+import androidx.annotation.Nullable;
+
+import com.jf.orr.net.base.NetHttpConfig;
 import com.jf.orr.net.http.TokenInterceptor;
+import com.jf.orr.utils.MD5Util;
+import com.jf.orr.log.NetLogUtil;
 
-import java.util.Map;
-
-import retrofit2.Retrofit;
-import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.WeakHashMap;
 
 /**
- * @Class: RetrofitHelper
- * @Description:
- * @author: github.com/jackyflame
- * @Date: 2020/8/12
+ * Created by admin on 2016/10/18.
  */
+
 public class RetrofitHelper {
 
-    private Retrofit retrofitCache;
-    private String customBaseUrl;
+    private Application context;
+    private static List<ReqInterceptor> interceptorList = new ArrayList<>();
+    private RetrofitDefaultProvider defaultProvider;
+    private WeakHashMap<String,IRetrofitProvider> providerContainer = new WeakHashMap<>();
 
     private static class SingletonHolder {
         /***单例对象实例*/
@@ -30,74 +34,130 @@ public class RetrofitHelper {
         return SingletonHolder.INSTANCE;
     }
 
-    private Retrofit provideRetrofit() {
-        return provideRetrofit(NetConst.getServerBaseUrl());
+    private RetrofitHelper(){
+        init(null);
     }
 
-    private Retrofit provideRetrofit(String baseUrl) {
-        return provideRetrofit(baseUrl,null);
+    public void init(Application context){
+        init(context, null,null);
     }
 
-    private Retrofit provideRetrofit(Map<String, String> customHeader) {
-        return provideRetrofit(NetConst.getServerBaseUrl(), customHeader,false);
-    }
-
-    private Retrofit provideRetrofit(Map<String, String> customHeader, boolean createForce) {
-        return provideRetrofit(NetConst.getServerBaseUrl(),customHeader, createForce);
-    }
-
-    private Retrofit provideRetrofit(String baseUrl, Map<String, String> customHeader) {
-        if (retrofitCache == null || !baseUrl.equals(customBaseUrl)) {
-            customBaseUrl = baseUrl;
-            retrofitCache = provideRetrofit(customBaseUrl, customHeader,true);
+    public void init(Application context, String defaultBaseUrl, TokenInterceptor tokenInterceptor){
+        try {
+            this.context = context;
+            if(!TextUtils.isEmpty(defaultBaseUrl)){
+                NetHttpConfig.setBaseUrl(defaultBaseUrl);
+            }else{
+                defaultBaseUrl = NetHttpConfig.getServerBaseUrl();
+            }
+            if(TextUtils.isEmpty(defaultBaseUrl)){
+                NetLogUtil.e("RetrofitHelper init error: defaultBaseUrl is empty");
+                throw new Exception("RetrofitHelper init error: defaultBaseUrl is empty");
+            }
+            if(tokenInterceptor == null){
+                defaultProvider = new RetrofitDefaultProvider(defaultBaseUrl);
+            }else{
+                defaultProvider = new RetrofitDefaultProvider(defaultBaseUrl,tokenInterceptor);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        return retrofitCache;
     }
 
-    private Retrofit provideRetrofit(String baseUrl, Map<String, String> customHeader, boolean createForce) {
-        if (retrofitCache == null || !baseUrl.equals(customBaseUrl) || createForce) {
-            TokenInterceptor interceptor = new TokenInterceptor();
-            interceptor.setCustomHeader(customHeader);
-            retrofitCache =  provideNewRetrofit(interceptor,baseUrl);
+    @Nullable
+    public static Application getContext() {
+        if(getInstance().context == null){
+            NetLogUtil.e("context need init in Application onCreate() !!!");
         }
-        return retrofitCache;
+        return getInstance().context;
     }
 
-    private Retrofit provideNewRetrofit(TokenInterceptor interceptor, String baseUrl) {
-        customBaseUrl = baseUrl;
-        retrofitCache = new Retrofit
-                .Builder()
-                .baseUrl(baseUrl)
-                .client(OkHttpHelper.getInstance().provideOkHttp(interceptor))
-                .addConverterFactory(FastJsonConvertFactory.create())
-                .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
-                .build();
-        return retrofitCache;
+    public static List<ReqInterceptor> getInterceptorList() {
+        return interceptorList;
     }
 
-    public <T> T defaultCall(Class<T> type) {
-        return provideRetrofit().create(type);
+    public static void cleanInterceptorList(){
+        if(interceptorList != null){
+            interceptorList.clear();
+        }
     }
 
-    public <T> T callWithCustom(String baseUrl, Class<T> type) {
-        if (baseUrl == null || baseUrl.isEmpty()) {
+    public static void addReqInterceptor(ReqInterceptor interceptor){
+        if(interceptorList == null){
+            interceptorList = new ArrayList<>();
+        }
+        interceptorList.add(interceptor);
+    }
+
+    public static void removeInterceptor(ReqInterceptor interceptor){
+        if(interceptorList == null){
+            return;
+        }
+        interceptorList.remove(interceptor);
+    }
+
+    public <T> T create(Class<T> type){
+        return defaultProvider.create(type);
+    }
+
+    public <T> T create(TokenInterceptor interceptor, Class<T> type){
+        return defaultProvider.create(interceptor, type);
+    }
+
+    public <T> T create(String baseUrl, Class<T> type) {
+        if (TextUtils.isEmpty(baseUrl)) {
             return null;
         }
-        return provideRetrofit(baseUrl).create(type);
+        return getProvider(baseUrl,null).create(type);
     }
 
-    public <T> T callWithHeader(String baseUrl, Map<String, String> customHeader, Class<T> type) {
-        if (baseUrl == null || baseUrl.isEmpty()) {
+    public <T> T create(String baseUrl, TokenInterceptor interceptor, Class<T> type) {
+        if (TextUtils.isEmpty(baseUrl)) {
             return null;
         }
-        return provideRetrofit(baseUrl, customHeader).create(type);
+        return getProvider(baseUrl,interceptor).create(interceptor, type);
     }
 
-    public <T> T callWithHeader(Map<String, String> customHeader, Class<T> type) {
-        return provideRetrofit(customHeader).create(type);
+    public <T> T create(IRetrofitProvider provider, Class<T> type) {
+        if (provider == null) {
+            return null;
+        }
+        //缓存
+        providerContainer.put(getProviderKey(provider.getBaseUrl(),provider.getTokenInterceptor()),provider);
+        //创建服务
+        return provider.create(type);
     }
 
-    public <T> T callWithHeader(Map<String, String> customHeader, boolean createForce, Class<T> type) {
-        return provideRetrofit(customHeader, createForce).create(type);
+    protected IRetrofitProvider getProvider(String baseUrl, TokenInterceptor interceptor){
+        String key = getProviderKey(baseUrl,interceptor);
+        IRetrofitProvider provider = null;
+        if(providerContainer.containsKey(key)){
+            provider = providerContainer.get(key);
+        }
+        if(provider == null){
+            try {
+                if(interceptor != null){
+                    provider = new RetrofitDefaultProvider(baseUrl,interceptor);
+                }else{
+                    provider = new RetrofitDefaultProvider(baseUrl);
+                }
+                providerContainer.put(key,provider);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return provider;
+    }
+
+    protected String getProviderKey(String baseUrl, TokenInterceptor interceptor) {
+        try {
+            if(!TextUtils.isEmpty(baseUrl)){
+                String tail = interceptor != null ? ("_"+interceptor.getUniKey()) : "_0_0";
+                return MD5Util.md5_16(baseUrl) + tail;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return String.valueOf(System.currentTimeMillis());
     }
 }
